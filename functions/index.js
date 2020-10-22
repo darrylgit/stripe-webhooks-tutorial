@@ -27,11 +27,14 @@ exports.events = functions.https.onRequest((request, response) => {
     );
 
     return admin
-      .database()
-      .ref('/events')
-      .push(event)
+      .firestore()
+      .collection('orders')
+      .add({ event: event })
       .then(snapshot => {
-        return response.json({ received: true, ref: snapshot.ref.toString() });
+        return response.json({
+          received: true,
+          snapshot
+        });
       })
       .catch(err => {
         console.error(err);
